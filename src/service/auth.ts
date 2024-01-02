@@ -2,29 +2,44 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import config from "../config";
-import { users } from "../model/users";
+import UserModel from "../model/user";
 import { ISignUp } from "../interface/auth";
 import { ACCESS_TOKEN_EXPIRY, REFRESH_TOKEN_EXPIRY } from "../constant/jwt";
 import UnauthenticatedError from "../error/unauthenticatedError";
+import BadRequestError from "../error/badRequestError";
 
 const SALT_ROUNDS = 10;
 
 export const signup = async (body: ISignUp) => {
-  await bcrypt.hash(body.password, SALT_ROUNDS, function (err, hash) {
-    // Store hash in your password DB.
-    console.log({ hash });
+  const hashedPassword = await bcrypt.hash(body.password, SALT_ROUNDS);
+
+  const userEmailExists = await UserModel.getByEmail(body.email);
+
+  if (userEmailExists) {
+    throw new BadRequestError(`User with email: ${body.email} already exists`);
+  }
+
+  await UserModel.create({
+    ...body,
+    password: hashedPassword,
   });
 
-  return;
+  return {
+    message: "User signed up successfully",
+  };
 };
 
 export const login = async (body: ISignUp) => {
-  const user = users.find(({ email }) => email === body.email)!;
+  const user = await UserModel.getByEmail(body.email);
+
+  if (!user) {
+    throw new BadRequestError("Invalid Email or Password");
+  }
 
   const passwordMatch = await bcrypt.compare(body.password, user.password);
 
   if (!passwordMatch) {
-    throw new UnauthenticatedError("Unauthorized");
+    throw new BadRequestError("Invalid Email or Password");
   }
 
   const accessToken = jwt.sign(user, config.jwt.accessTokenSecret!, {
@@ -34,8 +49,6 @@ export const login = async (body: ISignUp) => {
   const refreshToken = jwt.sign(user, config.jwt.refreshTokenSecret!, {
     expiresIn: REFRESH_TOKEN_EXPIRY,
   });
-
-  console.log({ accessToken, refreshToken });
 
   return {
     accessToken,

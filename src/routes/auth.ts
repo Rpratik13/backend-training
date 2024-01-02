@@ -1,9 +1,13 @@
 import { Router } from "express";
-import { login, signup } from "../controller/auth";
+
+import { signup } from "../controller/auth";
+import { createUserSchema } from "../schema/user";
+import { validateReqBody } from "../middleware/validator";
+import { login } from "../controller/auth";
 
 const router = Router();
 
-router.post("/signup", signup);
+router.post("/signup", validateReqBody(createUserSchema), signup);
 
 router.post("/login", login);
 

@@ -1,29 +1,62 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import * as userService from "../service/user";
+import { IUser } from "../interface/user";
 
-export const getUsers = (req: Request, res: Response) => {
-  const params = req.query;
-
-  const data = userService.getUsers(params);
-
-  return res.json({
-    data,
-  });
-};
-
-export const getUserById = (req: Request, res: Response) => {
-  const id = +req.params.id;
-
-  const data = userService.getUserById(id);
+export const getAll = async (_req: Request, res: Response) => {
+  const data = await userService.getAll();
 
   return res.json({
     data,
   });
 };
 
-export const createUser = () => {};
+export const getById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
 
-export const updateUser = () => {};
+    const data = await userService.getById(id);
 
-export const deleteUser = () => {};
+    return res.json({
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
+    const body: IUser = req.body;
+    const data = await userService.update(id, body);
+
+    return res.json({ data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
+
+    const data = await userService.deleteUser(id);
+
+    return res.json({ message: "User successfully deleted" });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -5,6 +5,7 @@ import UnauthenticatedError from "../error/unauthenticatedError";
 
 import loggerWithNameSpace from "../util/logger";
 import BadRequestError from "../error/badRequestError";
+import NotFoundError from "../error/notFoundError";
 
 const logger = loggerWithNameSpace("ErrorHandler");
 
@@ -29,6 +30,10 @@ export function genericErrorHandler(
   }
 
   if (err instanceof BadRequestError) {
+    return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+  }
+
+  if (err instanceof NotFoundError) {
     return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
   }
 

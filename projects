@@ -1,0 +1,9 @@
+id -> Primary Key, Integer
+name -> string, max length = 255, not nullable, unique
+description -> string, max length = 255, nullable
+start date -> date, not nullable
+end date -> date, nullable
+created by
+created at 
+updated by 
+updated at
