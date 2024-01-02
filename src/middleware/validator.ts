@@ -11,7 +11,7 @@ export function validateReqQuery(schema: Schema) {
       return next(new BadRequestError(error.message));
     }
 
-    req.body = value;
+    req.query = value;
 
     next();
   };
