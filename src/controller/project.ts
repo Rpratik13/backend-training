@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 
 import * as projectService from "../service/project";
+import { GetAllProjectsQuery } from "../interface/project";
 
-export const getAll = async (_req: Request, res: Response) => {
-  const data = await projectService.getAll();
+export const getAll = async (req: Request, res: Response) => {
+  const query = req.query;
 
-  return res.json({
-    data,
-  });
+  const data = await projectService.getAll(
+    query as unknown as GetAllProjectsQuery
+  );
+
+  return res.json(data);
 };
 
 export const getById = async (

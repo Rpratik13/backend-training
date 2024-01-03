@@ -1,9 +1,25 @@
+import { PaginationQuery } from "../interface/pagination";
+import { GetAllProjectsQuery } from "../interface/project";
 import ProjectModel from "../model/project";
+import { buildMeta, getPaginationOptions } from "../util/pagination";
 
-export const getAll = async () => {
-  const data = await ProjectModel.getAll();
+export const getAll = async (query: GetAllProjectsQuery) => {
+  const { page, size } = query;
 
-  return data;
+  const pageDetails = getPaginationOptions({ page, size });
+
+  const projectsPromise = ProjectModel.getAll({ ...pageDetails, ...query });
+  const countPromise = ProjectModel.countAll(query);
+
+  const [projects, count] = await Promise.all([projectsPromise, countPromise]);
+
+  const total = count.count;
+  const meta = buildMeta(total, size, page);
+
+  return {
+    data: projects,
+    meta,
+  };
 };
 
 export const getById = async (id: number) => {

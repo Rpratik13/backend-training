@@ -1,8 +1,9 @@
+import { PaginationQuery } from "../interface/pagination";
 import BaseModel from "./baseModel";
 
 export default class ProjectModel extends BaseModel {
-  static async getAll() {
-    return this.queryBuilder()
+  static async getAll(params: any) {
+    const query = this.queryBuilder()
       .select({
         id: "id",
         name: "name",
@@ -11,6 +12,31 @@ export default class ProjectModel extends BaseModel {
         endDate: "endDate",
       })
       .table("projects");
+
+    query.offset(params.offset).limit(params.limit);
+
+    if (params.startDate && params.endDate) {
+      query
+        .where("startDate", "<=", params.endDate)
+        .where("endDate", ">=", params.startDate);
+    }
+
+    return query;
+  }
+
+  static countAll(params: any) {
+    const query = this.queryBuilder()
+      .table("projects")
+      .count({ count: "id" })
+      .first();
+
+    if (params.startDate && params.endDate) {
+      query
+        .where("startDate", "<=", params.endDate)
+        .where("endDate", ">=", params.startDate);
+    }
+
+    return query;
   }
 
   static async getById(id: number) {
