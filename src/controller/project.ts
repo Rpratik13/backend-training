@@ -28,6 +28,22 @@ export const getById = async (
   }
 };
 
+export const createProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const body = req.body;
+
+    const data = await projectService.create(body);
+
+    return res.json({ message: "Project created successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateProject = async (
   req: Request,
   res: Response,

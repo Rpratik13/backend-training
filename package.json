@@ -6,12 +6,11 @@
   "module": "commonjs",
   "scripts": {
     "start": "nodemon src/index.ts",
-    "knex": "knex --knexfile=src/knexFile.ts",
-    "make:migration": "yarn knex migrate:make -x ts --env development",
-    "migrate": "yarn knex migrate:latest --verbose",
-    "rollback": "yarn knex migrate:rollback --verbose",
-    "seed": "yarn knex seed:run --verbose",
-    "make:seeder": "yarn knex seed:make -x ts --env development"
+    "make:migration": "knex --knexfile=src/knexFile.ts migrate:make ",
+    "migrate": "knex --knexfile=src/knexFile.ts migrate:latest --verbose",
+    "rollback": "knex --knexfile=src/knexFile.ts migrate:rollback --verbose",
+    "seed": "knex --knexfile=src/knexFile.ts seed:run --verbose",
+    "make:seeder": "knex --knexfile=src/knexFile.ts seed:make "
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

@@ -16,6 +16,10 @@ export const getById = async (id: number) => {
   return data;
 };
 
+export const create = async (body: any) => {
+  await ProjectModel.create(body);
+};
+
 export const update = async (id: number, body: any) => {
   const project = await ProjectModel.getById(id);
 

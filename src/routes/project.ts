@@ -5,15 +5,16 @@ import {
   getById,
   getAll,
   updateProject,
+  createProject,
 } from "../controller/project";
-import { validateReqBody, validateReqQuery } from "../middleware/validator";
-import { updateUserSchema } from "../schema/user";
 
 const router = Router();
 
 router.get("/", getAll);
 
 router.get("/:id", getById);
+
+router.post("/", createProject);
 
 router.put("/:id", updateProject);
 
