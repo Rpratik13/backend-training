@@ -4,8 +4,11 @@ import config from "./config";
 import routes from "./routes";
 import { logger } from "./middleware/logger";
 import { genericErrorHandler, notFoundError } from "./middleware/errorHandler";
+import cookies from "cookie-parser";
 
 const app = express();
+
+app.use(cookies());
 
 app.use(express.json());
 
