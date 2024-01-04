@@ -11,13 +11,13 @@ import BadRequestError from "../error/badRequestError";
 const SALT_ROUNDS = 10;
 
 export const signup = async (body: ISignUp) => {
-  const hashedPassword = await bcrypt.hash(body.password, SALT_ROUNDS);
-
   const userEmailExists = await UserModel.getByEmail(body.email);
 
   if (userEmailExists) {
     throw new BadRequestError(`User with email: ${body.email} already exists`);
   }
+
+  const hashedPassword = await bcrypt.hash(body.password, SALT_ROUNDS);
 
   await UserModel.create({
     ...body,
